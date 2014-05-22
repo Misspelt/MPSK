@@ -3,6 +3,8 @@ function [ y ] = PSKmod( x, M )
 %   Detailed explanation goes here
 
 % check if variables are right format
+k=log2(M);
+
 pi=3.14;
 f=5;
 phi=pi;
@@ -34,7 +36,7 @@ end
 j=1;
 while j< x.length
     
-    while M
+    for k 
 
     end
     
