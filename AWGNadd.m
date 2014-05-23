@@ -1,7 +1,6 @@
-function [ output_args ] = Untitled3( input_args )
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
-
-
+function [ y ] = AWGNadd ( x, snr )
+%AWGNadd adds white Gaussian noise to the vector signal x with appropriate signal-to-noise ratio per sample. 
+y = awgn(x,snr); 
+return y;
 end
 
