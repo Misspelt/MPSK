@@ -3,72 +3,30 @@ function [ y ] = PSKmod( x, M )
 %   Detailed explanation goes here
 
 % check if variables are right format
-pi=3.14;
-f=5;
-phi=pi;
 
-x=[1 0 1 1 0];
-nx=size(x,2);
+% n=log2(M);
+% jesli y to serial to bierzmy ciagi dlugosci n, jesli wektor to sprawdzamy
+% czy Xy nei sa wieksze lub rowne od 0 i mniejsze od M
+xlength=length(x);
+y = zeros(1,xlength);%wektor wyjœciowy, póki co zerowy
+fi0=2*pi/M;%k¹t fazowy
 
-i=1;
-while i<nx+1
-     t = i:0.001:i+1;
-    if x(i)==1
-       psk=sin(2*pi*f*t);
-    else
-        psk=sin(2*pi*f*t+phi);
-    end
-    
-    subplot(3,1,3);
-    plot(t,psk);
-    hold on;
-    grid on;
-    axis([1 10 -2 2]);
-  
-    i=i+1;
-end
-
-
+f = 3;% Frequency of Modulating Signal
+fs = 100;% Sampling rate - This will define the resoultion
+t = (0+1/fs): 1/fs : 1;% Time for one bit
 
 
 j=1;
-while j< x.length
+while j < xlength
     
-    while M
+    %mozemy uzyc x(j) bezposrednio bo 
+    %sprawdzilismy czy jt w przedziale 0-M
+    fi=x(j)*fi0;%k¹t przesuniêcia, SPRAWDZIC indeksowanie wektorow
+    y(j)=sin(2*pi*f*t+fi);
+    %sprawdz jaki kat fazowy przypisac danemu x. czyli ktoremu M odpowiada
+    %(czy trzeba graya)
 
-    end
-    
     j=j+1;
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-end
-
+%o co chodzi z tym czasem
