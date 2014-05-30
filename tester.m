@@ -1,31 +1,23 @@
 clear all;
 len = 10; % Number of symbols
-M = 4; % Size of alphabet (M must be in the form of M = 2^K, where K is an integer.)
+M = 2; % Size of alphabet (M must be in the form of M = 2^K, where K is an integer.)
 %msg = randi([0 M-1],len,1); % Original signal
-msg=[0 1 2 3 3];
-[PSKmsg,PSKmsgZ]=PSKmod(msg,M);
+msg=[ 0 1 ];
+[PSKmsg,PSKmsgZ,msgFi]=PSKmod(msg,M);%PSKmsgZ - zapis zespolony powinien byc taki sam jak PSKmsgML
+PSKmsgML = pskmod(msg,M);
 
-%PSKmsgML = pskmod(msg,M);
+PSKmsgNOISED = AWGNadd(PSKmsg,1);
+
+rPSKmsgDEMOD = PSKdemod(PSKmsgNOISED,M);
+
+subplot(3,1,1)
+plot(real(PSKmsg))
+
+subplot(3,1,2)
+plot(real(PSKmsgNOISED))
 
 
-%k=0;
-%while k <10
-%    u=fft(PSKmsg(1000*k+1:1000*(k+1)));
-%    angle(u(4))
-%    k=k+1;
-%end
-PSKmsgNOISED = AWGNadd(PSKmsg,100);
+subplot(3,1,3)
+plot(rPSKmsgDEMOD)
 
-z = PSKdemod(PSKmsgNOISED,M)
-
-%subplot(4,1,1)
-%plot(real(PSKmsg))
-
-%subplot(4,1,2)
-%plot(real(PSKmsg1))
-
-%subplot(4,1,3)
-%plot(z)
-
-%subplot(4,1,4)
-%plot(PSKmsgML)
+rPSKmsgDEMOD

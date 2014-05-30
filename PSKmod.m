@@ -1,4 +1,4 @@
-function [ y,z ] = PSKmod( x, M )
+function [ y,z,Fiarray ] = PSKmod( x, M )
 %PSKmod function performs M-ary PSK modulation
 %   Detailed explanation goes here
 
@@ -16,19 +16,18 @@ xlength=length(x);
 z=zeros(1,xlength);%imaginary sins
 ylength=xlength*fs;
 y = zeros(1,ylength);%wektor wyjsciowy, poki co zerowy
+Fiarray =  zeros(1,xlength);
 
-j=1;
-while j < xlength+1
-    
+for j=1:xlength,    
     %mozemy uzyc x(j) bezposrednio bo 
     %sprawdzilismy czy jt w przedziale 0-M
     fi=x(j)*fi0;%kat przesuniêcia
+    Fiarray(j)=fi;
     ind=(fs*(j-1))+1;%index of isnertion into y array
     y((ind):(ind+fs-1)) = cos(2*pi*f*t+fi);
     z(j)=sin(2*pi*f+fi);
     %sprawdz jaki kat fazowy przypisac danemu x. czyli ktoremu M odpowiada
 
-    j=j+1;
 end
 
 z=z';
