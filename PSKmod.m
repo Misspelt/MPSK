@@ -1,7 +1,9 @@
-function [ y] = PSKmod( x, M )
-%PSKmod function performs M-ary PSK modulation
+function [ y] = PSKmod( x, M, f, fs)
+%PSKdemod wykonuje modulacj? M-ary PSK sygna?u @x
 % @x - wektor danych typu int o wielkoœciach (x>=0 && x<M)
 % @M - liczba taka ¿e n=log2(M) nale¿y do naturalnych > 1
+% @f - czêstotliwoœæ sygna³u moduluj¹cego
+% @fs - próbkowanie/rozdzielczoœæ
 
 xlength=length(x);
 
@@ -19,8 +21,6 @@ if (isinteger(x))
 end
 
 fi0=2*pi/M;%kat modulacji
-f = 3;%czêstotliwoœæ sygna³u moduluj¹cego
-fs = 1000;%próbkowanie/rozdzielczoœæ
 t = 0: 1/fs : 1-1/fs;%czas przesy³u 1 bitu
 %z=zeros(1,xlength);%porównanie do wyniku wbudowanej funkcji moduluj¹cej
 ylength=xlength*fs;

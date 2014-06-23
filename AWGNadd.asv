@@ -1,9 +1,10 @@
 function [ y ] = AWGNadd ( x, snr, fs)
-%AWGNadd dodaje bia?y szum Gaussa do wektora @x z podanym snr
+%AWGNadd adds white Gaussian noise to the vector signal x with appropriate signal-to-noise ratio per sample. 
 % @snr - signal to noise ratio
-% @fs - próbkowanie/rozdzielczoœæ
-Ej=1;
+
+%Ej=1;
 y=x+sqrt(fs*Ej*10^(-snr/10))*randn(1,length(x));
+
 
 end
 

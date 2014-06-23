@@ -1,13 +1,13 @@
-function [ y ] = PSKdemod( x, M )
-%PSKdemod function performs M-ary PSK demodulation
+function [ y ] = PSKdemod( x, M, f, fs)
+%PSKdemod wykonuje demodulacj? M-ary PSK sygna?u @x
 % @M - liczba taka ¿e n=log2(M) nale¿y do naturalnych > 1
+% @f - czêstotliwoœæ sygna³u moduluj¹cego
+% @fs - próbkowanie/rozdzielczoœæ
 
 if (isinteger(log2(M)))
         error('Niepoprawna wartoœciwoœæ modulacji.')
 end
 
-f = 3;%czêstotliwoœæ sygna³u moduluj¹cego
-fs = 1000;%próbkowanie/rozdzielczoœæ
 ylength=length(x)/fs;
 y = zeros(1,ylength);%wektor wyjsciowy, poki co zerowy
 fi = zeros(1,M);%wektor przypisania przesuniêæ fazowych do wartoœci
