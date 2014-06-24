@@ -1,4 +1,4 @@
-function [ y ] = PSKdemod( x, M, f, fs)
+function [ y ,z] = PSKdemod( x, M, f, fs)
 %PSKdemod wykonuje demodulacj? M-ary PSK sygna?u @x
 % @M - liczba taka ¿e n=log2(M) nale¿y do naturalnych > 1
 % @f - czêstotliwoœæ sygna³u moduluj¹cego
@@ -10,7 +10,7 @@ end
 
 ylength=length(x)/fs;
 y = zeros(1,ylength);%wektor wyjsciowy, poki co zerowy
-fi = zeros(1,M);%wektor przypisania przesuniêæ fazowych do wartoœci
+fi = zeros(1,(0+M));%wektor przypisania przesuniêæ fazowych do wartoœci
 %wartoœciami s¹ pozycje w wektorze (fi(x)-1)
 for m=0:(M-1),
      fi(m+1)=m*2*pi/M;%k¹ty odniesienie
@@ -27,3 +27,14 @@ for j=0:(ylength-1),
     y(j+1)=index-1;
 end
 
+z=y;%wektor intów
+
+k=log2(M);%konwersja z intow na binarne
+x=y;
+y=zeros(1,((0+ylength)*k));
+for j=1:ylength, 
+    %biore czesc wektora x i wrzucam do y, reszta to 0 z automatu
+    robo=de2bi(x(j));
+    rl=length(robo);
+    y(((j-1)*k+1):((j-1)*k+rl))=robo;
+end

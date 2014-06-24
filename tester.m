@@ -1,15 +1,18 @@
-len = 111; % Number of symbols
+len = 10; % Number of symbols
 M = 2; % Size of alphabet (M must be in the form of M = 2^K, where K is an integer.)
-msg = randi([0 M-1],1,len); % Original signal
+msg     = randi([0 M-1],1,len); % Original signal
+M=4;
 snr=100;
+f=1;
+fs=1000;
 
-[PSKmsg]=PSKmod(msg,M);
+[PSKmsg]=PSKmod(msg,M, f, fs);
 
-PSKmsgNOISED = AWGNadd(PSKmsg,snr);
-PSKmsgDEMOD = PSKdemod(PSKmsgNOISED,M);
+PSKmsgNOISED = AWGNadd(PSKmsg,snr, fs);
+PSKmsgDEMOD = PSKdemod(PSKmsgNOISED,M,f,fs);
 
 mPSKmsgNOISED = mAWGNadd(PSKmsg,snr);%built in implementation
-mPSKmsgDEMOD = PSKdemod(mPSKmsgNOISED,M);%built in implementation
+mPSKmsgDEMOD = PSKdemod(mPSKmsgNOISED,M,f,fs);
 
 
 odniesienie = 1:1:len;
