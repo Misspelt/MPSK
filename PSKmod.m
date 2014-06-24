@@ -7,7 +7,7 @@ function [ y, z] = PSKmod( xin, M, f, fs)
 % @fs - próbkowanie/rozdzielczoœæ
 
 k=log2(M);%konwersja z binarnych na inty
-xlength=length(xin)/k%musi by? podzielny przez k
+xlength=length(xin)/k; %musi by? podzielny przez k
 
 if (mod(xlength,1)~=0)
         error('Ilo?? bitó nie jest wielokrotno?ci? log2(M).')
