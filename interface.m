@@ -387,7 +387,7 @@ end
 
 plot(handles.SygWej, we);
 axis(handles.SygWej, [0 length(we) -0.5 1.5]);
-set(get(handles.SygWej,'XLabel'),'String','Czas [s]')
+set(get(handles.SygWej,'XLabel'),'String','Czas x fs x f')
 set(get(handles.SygWej,'YLabel'),'String','Stan bitu')
 
 %-----------------Przejscie sygnalu przez kanal modulatora----------------%
@@ -404,7 +404,7 @@ set(get(handles.SygMod,'YLabel'),'String','Amplituda sygnalu')
 %-------------------------------AWGNadd-----------------------------------%
 y=AWGNadd(y,SNR,fs);
 plot(handles.SygAWGN, t, y);
-axis(handles.SygAWGN, [0 length(ylength) -1.5 1.5]);
+axis(handles.SygAWGN, [0 length(ylength) -2 2]);
 set(get(handles.SygAWGN,'XLabel'),'String','Czas przesylu jednego bitu[s]')
 set(get(handles.SygAWGN,'YLabel'),'String','Amplituda sygnalu')
 %------------Demodulacja sygnalu zmodulowanego z szumem bialym------------%
@@ -423,7 +423,7 @@ end
 
 plot(handles.SygWy, wy);
 axis(handles.SygWy, [0 length(wy) -0.5 1.5]);
-set(get(handles.SygWy,'XLabel'),'String','Czas [s]')
+set(get(handles.SygWy,'XLabel'),'String','Czas x fs x f')
 set(get(handles.SygWy,'YLabel'),'String','Stan bitu')   
 %-------------------------------------------------------------------------%
 %---------------------------------PER-------------------------------------%
