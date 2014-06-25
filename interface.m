@@ -453,7 +453,7 @@ BERR=round(BERR);
 set(handles.prob,'String', BERR);
 guidata(hObject,handles);
 %-------------------------------------------------------------------------%
-%-------------------------Zaleznosc BNR or SNR----------------------------%
+%-------------------------Zaleznosc BER or SNR----------------------------%
 snrV=1:1:10;
 snrV=10*log10(snrV);    
 ber=erfc(sqrt(snrV)*sin(pi.* (1/M)));
