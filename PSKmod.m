@@ -9,9 +9,6 @@ function [ y, z] = PSKmod( xin, M, f, fs)
 k=log2(M);%konwersja z binarnych na inty
 xlength=length(xin)/k; %musi by? podzielny przez k
 
-if (mod(xlength,1)~=0)
-        error('Ilo?? bitó nie jest wielokrotno?ci? log2(M).')
-end
 
 x=zeros(1,(0+xlength));
 for j=1:xlength, 
@@ -20,15 +17,12 @@ end
 
 z=x;%wektor intów
 
-if (mod(k,1)~=0)
-        error('Niepoprawna wartoœciwoœæ modulacji.')
-end
 
 
 chck=x-M;
 for j=1:xlength,  
     if any ( chck(j) > 0 || x(j) < 0 )
-        error('Niepoprawna wartoœæ nadawanego sygna³u.')
+        error('Niepoprawna wartosc nadawanego sygnalu.')
     end
 end
 if (mod(x,1)~=0)
@@ -37,7 +31,7 @@ end
 
 
 fi0=2*pi/M;%kat modulacji
-t = 0: 1/fs : 1-1/fs;%czas przesy³u 1 bitu
+t = 0: 1/fs : 1-1/fs;%czas przesy?u 1 bitu
 %z=zeros(1,xlength);%porównanie do wyniku wbudowanej funkcji moduluj¹cej
 ylength=xlength*fs;
 y = zeros(1,ylength);%wektor wyjsciowy, poki co zerowy

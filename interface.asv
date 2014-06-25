@@ -456,7 +456,8 @@ guidata(hObject,handles);
 %-------------------------Zaleznosc BNR or SNR----------------------------%
 snrV=1:1:10;
 snrV=10*log10(snrV);    
-ber=erfc(sqrt(snrV)*sin(pi.* (1/M)));
+ber=erfc(sqrt(snrV)*sin(pi.* (1/M)))
+%ber=2.*qfunc(sqrt(2.*snrV.*M).*sin(pi./M));
 
     
 semilogy(handles.Zal2, snrV,ber);
