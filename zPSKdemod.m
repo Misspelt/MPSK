@@ -1,4 +1,4 @@
-function [ y ,z] = PSKdemod( x, M, f, fs)
+function [ y ,z] = zPSKdemod( x, M)
 %PSKdemod wykonuje demodulacj? M-ary PSK sygna?u @x
 % @M - liczba taka ¿e n=log2(M) nale¿y do naturalnych > 1
 % @f - czêstotliwoœæ sygna³u moduluj¹cego
@@ -8,7 +8,7 @@ if (isinteger(log2(M)))
         error('Niepoprawna wartoœciwoœæ modulacji.')
 end
 
-ylength=length(x)/fs;
+ylength=length(x);
 y = zeros(1,ylength);%wektor wyjsciowy, poki co zerowy
 fi = zeros(1,(1+M));%wektor przypisania przesuniêæ fazowych do wartoœci
 %wartoœciami s¹ pozycje w wektorze (fi(x)-1)
@@ -17,21 +17,21 @@ for m=0:(M),
 end
 
 for j=0:(ylength-1),    
-    fftx=fft(x(fs*j+1:fs*(j+1)));
-    PShift=angle(fftx(f+1));%przesuniêcie fazowe danej czêœci sygna³u
-    rPShift=round(PShift*10^4)/10000;%usuwa nadmiar miejsc po przecinku
+    
+    rPShift=angle(x(j+1));%przesuniêcie fazowe danej czêœci sygna³u
     if rPShift < 0 %adds 2pi for under 0 outputs
         rPShift=rPShift+(2*pi);
     end
     [c index] = min(abs(fi-rPShift));%znajduje najblizsza faze w tablicy fi i na tej podstawi podaje wartosc sygnalu
-    if(index==1+M)%poniewaz szukamy penej wartoci a peny okres nie jest blisko 0 tylko 2pi
+   
+    if(index==1+M)
        index=1;
     end
+    
     y(j+1)=index-1;
 end
 
 z=y;%wektor intów
-
 k=log2(M);%konwersja z intow na binarne
 x=y;
 y=zeros(1,((0+ylength)*k));
