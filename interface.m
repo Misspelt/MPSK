@@ -22,7 +22,7 @@ function varargout = interface(varargin)
 
 % Edit the above text to modify the response to help interface
 
-% Last Modified by GUIDE v2.5 28-Jun-2014 13:30:50
+% Last Modified by GUIDE v2.5 30-Jun-2014 16:27:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -147,6 +147,18 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+% --- Executes during object creation, after setting all properties.
+function Es_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Es (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
 function Reset_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to SygWy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -222,6 +234,8 @@ function M_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of M as text
 %        str2double(get(hObject,'String')) returns contents of M as a double
 global M;
+global poprawne;
+
 handles.Mo=get(hObject,'String');
 guidata(hObject, handles);
 M=str2double(get(hObject,'String'));
@@ -229,8 +243,10 @@ k=log2(M);
 
 if (mod(k,1)~=0)
     set(handles.error,'String','ERROR! Niepoprawna wartosciwosc modulacji.');
+    poprawne=false;
 else
         set(handles.error,'String','');
+    poprawne=true;
 end
 
 
@@ -245,12 +261,21 @@ function f_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of f as a double
 
 global f;
+global poprawne;
+
 handles.fo=get(hObject,'String');
 guidata(hObject,handles);
 f=get(hObject,'String');
 guidata(hObject, handles);
 f=str2num(get(hObject,'String'));
 
+if(f<=0)
+    set(handles.error,'String','ERROR! Podana czestotliwosc nosnej mniejsza lub równa 0');
+    poprawne=false;
+else
+     set(handles.error,'String','');
+    poprawne=true;
+end
 
 %---------------------Czestotliwosc próbkowania---------------------------%
 function fs_Callback(hObject, eventdata, handles)
@@ -262,12 +287,45 @@ function fs_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of fs as a double
 
 global fs;
+global poprawne;
 handles.fso=get(hObject,'String');
 guidata(hObject,handles);
 fs=get(hObject,'String');
 guidata(hObject,handles);
 fs=str2num(get(hObject,'String'));
 
+if(fs<=0)
+    set(handles.error,'String','ERROR! Podane próbkowanie mniejsze lub równe 0.');
+    poprawne=false;
+else
+     set(handles.error,'String','');
+    poprawne=true;
+end
+poprawne=true;
+
+%---------------------Energia symbolu---------------------------%
+function Es_Callback(hObject, eventdata, handles)
+% hObject    handle to fs (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of fs as text
+%        str2double(get(hObject,'String')) returns contents of fs as a double
+
+global poprawne;
+global Es;
+handles.fso=get(hObject,'String');
+guidata(hObject,handles);
+Es=get(hObject,'String');
+guidata(hObject,handles);
+Es=str2num(get(hObject,'String'));
+if(Es<0)
+    set(handles.error,'String','ERROR! Podana energia mniejsza od 0.');
+    poprawne=false;
+else
+     set(handles.error,'String','');
+    poprawne=true;
+end
 
 %---------Losowe generowanie sygnalu przy okreslonej ilosci bitów --------%
 function Generuj_Callback(hObject, eventdata, handles)
@@ -368,6 +426,7 @@ function Start_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in SygAWGN future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+global Es;
 global Signal;
 global f;
 global fs;
@@ -375,20 +434,25 @@ global Dlugosc;
 global M;
 global SNR;
 global BERR;
-    
+global poprawne;
+
+if(poprawne == false)
+    set(handles.error,'String','Zle wprowadzone dane.');
+    return;
+else
+    set(handles.error,'String','');
+end
 guidata(hObject, handles);
 
-if (SNR==[])
-    set(handles.error,'String','ERROR!brak SNR.');
-else
-        set(handles.error,'String','');
-end
+
+    set(handles.error,'String','CZEKAJ,GENERUJE MODULACJE');
 %-----------------Przejscie sygnalu przez kanal modulatora----------------%
 %---------------------------------PSKmod----------------------------------%
-[y,z1]=PSKmod(Signal,M,f,fs);
+Ts=1;
+[y,z1]=PSKmod(Signal,M,f,fs,Es, Ts);
     
 t = 0: 1/fs : Dlugosc/log2(M)-1/fs;
-sinusoida=sin(2*pi*f*t);
+sinusoida=sqrt(2*Es/Ts).*sin(2*pi*f*t);
 
 minx=0-1/fs;
 maxx=Dlugosc/log2(M);
@@ -405,7 +469,7 @@ set(get(handles.SygMod,'YLabel'),'String','Amplituda sygnalu')
 
 %-----------Przejscie zmodulowanego sygnalu przez kanal AWGN--------------%
 %-------------------------------AWGNadd-----------------------------------%
-y1=AWGNadd(y,SNR);
+y1=AWGNadd(y,SNR, fs, M, Es);
 
 
 minx=0-1/fs;
@@ -457,7 +521,7 @@ BER=erfc(sqrt(snrV)*sin(pi.* (1/M)));%potrzebne normlane
     
 BERR=100*BER;
 BERR=round(BERR);
-
+set(handles.error,'String','');
 
 % --- Executes on button press in SNRBER.
 function SNRBER_Callback(hObject, eventdata, handles)
@@ -470,21 +534,31 @@ global M;
 global Signal;
 global f;
 global fs;
+global Es;
+
+Ts=1;
 
 %WSZYSTKO MUSI BYC ZAINICJALZIOWACNEEEEEEEEE
 
+    set(handles.error,'String','CZEKAJ, SYMULUJE SER');
+    
 snrRangeStart=-5;
 snrRangeEnd=25;
 snrV=snrRangeStart:1:snrRangeEnd;
 datestr(now, 'HH:MM:SS')
-practicalBER=ber2snr( Signal, M, f, fs, snrV);%potrzebne db, punktowy zwrot funkcji
+practicalBER=ber2snr( Signal, M, f, fs, snrV,Es, Ts);%potrzebne db, punktowy zwrot funkcji
 datestr(now, 'HH:MM:SS')
 % zpracticalBER=zber2snr( Signal, M, f, snrV);%potrzebne db, zespolony zwrot funkcji
 % datestr(now, 'HH:MM:SS')
 snrV = 10.^(snrV / 10); %db na normlane
-theoreticalBER=erfc(sqrt(snrV*log2(M))*sin(pi.* (1/M)));%potrzebne normlane
+
+theoreticalBER=erfc(sqrt(snrV*log2(M)./2)*sin(pi.* (1/M)));%potrzebne normlane
 datestr(now, 'HH:MM:SS')
 snrV=10*log10(snrV);  %normlane na db
+
+
+practicalBER
+
 
 minx=min(snrV)-abs(min(snrV)*0.2);
 % maxx=max(snrV)+max(snrV)*0.2;
@@ -504,5 +578,4 @@ legend(handles.Zal2,'teoretyczny','praktyczny',1 );
 %legend(handles.Zal2,'teoria','próbkowana','zespolona',3);
 set(get(handles.Zal2,'XLabel'),'String','SNR')
 set(get(handles.Zal2,'YLabel'),'String','BER')  
-
-% http://www.embedded.com/print/4017668 %
+set(handles.error,'String','');

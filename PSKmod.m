@@ -1,4 +1,4 @@
-function [ y, z] = PSKmod( xin, M, f, fs)
+function [ y, z] = PSKmod( xin, M, f, fs, Es, Ts)
 %PSKdemod wykonuje modulacj? M-ary PSK sygna?u @x
 % @xin - wektor binarnych danych
 % @x - wektor danych typu int o wielkoœciach (x>=0 && x<M)
@@ -35,5 +35,5 @@ y = zeros(1,ylength);%wektor wyjsciowy, poki co zerowy
 for j=1:xlength,    
     fi=x(j)*fi0;%kat przesuniêcia fazowego
     ind=(fs*(j-1))+1;%index umieszczenia danych zmodulowanych
-    y((ind):(ind+fs-1)) = cos(2*pi*f*t+fi);
+    y((ind):(ind+fs-1)) = sqrt(2*Es/Ts)*cos(2*pi*f*t+fi);
 end
